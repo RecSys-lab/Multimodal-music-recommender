@@ -1,0 +1,9 @@
+python >= 3.4
+numpy >= 1.19
+scipy >= 1.6
+PyInquirer >= 1.0.3
+opencv-python >= 4.1.1
+tensorflow >= 2.6.0
+keras >= 2.6.0
+pillow >= 8.3
+cornac >= 1.14.1

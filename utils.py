@@ -1,3 +1,4 @@
+import os
 import cv2
 import logging
 import datetime
@@ -60,3 +61,18 @@ def frameResizer(image, size):
     generatedImage = cv2.resize(
         image, (generatedImageW, generatedImageH), interpolation=cv2.INTER_AREA)
     return generatedImage
+
+
+def emptyFolderRemover(mainDir: str):
+    """
+    Removes empty folders (like when no frames extracted from videos)
+    Parameters
+    ----------
+    mainDir: string
+        The parent directory containing empty and filled folders
+        example: "C:/Some/Path"
+    """
+    folders = list(os.walk(mainDir))[1:]
+    for folder in folders:
+        if not folder[2]:
+            os.rmdir(folder[0])

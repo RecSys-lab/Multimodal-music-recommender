@@ -1,9 +1,8 @@
 import os
 import cv2
 import time
-import string
-from utils import logger, frameResizer
 from config import videosDir, framesDir, networkInputSize
+from utils import logger, frameResizer, emptyFolderRemover
 
 
 # Extracts frames from a given list of videos
@@ -26,7 +25,6 @@ def frameExtractor():
             if os.path.exists(generatedPath):
                 print(f'Skipping video {file} as its folder already exists!')
             else:
-                logger(f'Processing video {file} ...')
                 os.mkdir(generatedPath)
                 # Capturing video
                 try:
@@ -57,6 +55,8 @@ def frameExtractor():
                 except Exception as error:
                     errorText = str(error)
                     logger(f'Unexpected error: {errorText}', logLevel="error")
+        print(f'Now, removing empty folders in {framesDir}')
+        emptyFolderRemover(framesDir)
     except FileNotFoundError:
         logger(
             f'The input directory does not exist or contain video files!', logLevel="error")

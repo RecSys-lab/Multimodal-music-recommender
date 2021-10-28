@@ -38,3 +38,5 @@ After providing the configurations, you can easily run the app using the command
 ```python
 python ./main.py
 ```
+
+Please note that we assumed videos are already FPS=1 and ignored the process capturing one frame per second.

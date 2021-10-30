@@ -17,11 +17,12 @@ def frameExtractor():
         logger(f'Number of videos: {len(videoFiles)} (FPS: 1)')
         # Create first the frame destination folder
         try:
-            os.mkdir(framesDir)
+            if not os.path.exists(framesDir):
+                os.mkdir(framesDir)
         except FileExistsError as error:
             errorText = str(error)
             logger(
-                f'Error while running the app ({errorText})', logLevel="error")
+                f'Error while creating the folder ({errorText})', logLevel="error")
         finally:
             # Iterate on all video files in the given directory
             for file in videoFiles:
@@ -31,7 +32,7 @@ def frameExtractor():
                 generatedPath = f'{framesDir}/{videoName}'
                 # Do not re-generate frames for videos if there is a folder with their normalized name
                 if os.path.exists(generatedPath):
-                    print(f'Skipping video {file} as its folder already exists!')
+                    print(f'Skipping {file} as it has been extracted before!')
                 else:
                     os.mkdir(generatedPath)
                     # Capturing video
@@ -41,7 +42,7 @@ def frameExtractor():
                         capturedVideo = cv2.VideoCapture(videoPath)
                         if not capturedVideo.isOpened():
                             logger(f'Error while reading the content of {file}!',
-                                logLevel="error")
+                                   logLevel="error")
                         success, image = capturedVideo.read()
                         while success:
                             # Resizing the image, while preserving its aspect-ratio
@@ -62,7 +63,8 @@ def frameExtractor():
                             f'Extracted {frameCounter} frames of {videoName} in {elapsedTime} seconds!')
                     except Exception as error:
                         errorText = str(error)
-                        logger(f'Unexpected error: {errorText}', logLevel="error")
+                        logger(
+                            f'Unexpected error: {errorText}', logLevel="error")
             print(f'Now, removing empty folders in {framesDir}')
             emptyFolderRemover(framesDir)
     except FileNotFoundError:

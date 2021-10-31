@@ -3,7 +3,6 @@ from utils import logger
 from PyInquirer import prompt
 from FeatureExtraction.main import featureExtractor
 from FramesExtraction.frameExtractor import frameExtractor
-from config import imagesDirectory, extractedFeaturesDirectory, aggregatedFeaturesDirectory, packetSize
 
 modules = ['Frame Extraction', 'Visual Features Extraction']
 
@@ -29,10 +28,8 @@ def __init__():
     userInputs = getUserInput()['Action']
     if userInputs == 'Frame Extraction':
         frameExtractor()
-    elif userInputs == 'Visual Feature Extraction':
-        # arguments: (input directory, output directory)
-        featureExtractor(
-            imagesDirectory, extractedFeaturesDirectory, aggregatedFeaturesDirectory, packetSize)
+    elif userInputs == 'Visual Features Extraction':
+        featureExtractor()
 
 
 __init__()

@@ -1,5 +1,7 @@
-from utils import logger
+import os
 from keras import Model
+from utils import logger
+from config import featuresDir
 from FeatureExtraction.modelRunner import modelRunner
 from keras.applications.vgg19 import VGG19, preprocess_input
 
@@ -11,11 +13,14 @@ from keras.applications.vgg19 import VGG19, preprocess_input
 vggInputSize = 224
 
 
-def VGG19Launcher(foldersList: list, framesDir: str, packetSize: int):
+def VGG19Launcher(foldersList: list):
     logger('Launching Inception-v3 network ...')
+    # Create a folder for outputs if not existed
+    outputPath = f'{featuresDir}/Vgg19'
+    if not os.path.exists(outputPath):
+        os.mkdir(outputPath)
     # Load model
     model = VGG19()
     # Removing the final output layer, so that the second last fully connected layer with 4,096 nodes will be the new output layer
     model = Model(inputs=model.inputs, outputs=model.layers[-2].output)
-    modelRunner(foldersList, framesDir, packetSize,
-                vggInputSize, model, preprocess_input)
+    modelRunner(outputPath, foldersList, vggInputSize, model, preprocess_input)

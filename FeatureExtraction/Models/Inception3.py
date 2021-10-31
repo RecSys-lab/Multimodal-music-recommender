@@ -1,5 +1,7 @@
+import os
 from keras import Model
 from utils import logger
+from config import featuresDir
 from FeatureExtraction.modelRunner import modelRunner
 from keras.applications.inception_v3 import InceptionV3, preprocess_input
 
@@ -8,14 +10,18 @@ from keras.applications.inception_v3 import InceptionV3, preprocess_input
 # Running the example will load the Inception-v3 model and download the model weights
 
 # Static variables
-vggInputSize = 299
+inceptionInputSize = 299
 
 
-def Inception3Launcher(foldersList: list, framesDir: str, packetSize: int):
+def Inception3Launcher(foldersList: list):
     logger('Launching Inception-v3 network ...')
+    # Create a folder for outputs if not existed
+    outputPath = f'{featuresDir}/Incp3'
+    if not os.path.exists(outputPath):
+        os.mkdir(outputPath)
     # Load model
     model = InceptionV3()
     # Removing the final output layer, so that the second last fully connected layer with 2,048 nodes will be the new output layer
     model = Model(inputs=model.inputs, outputs=model.layers[-2].output)
-    modelRunner(foldersList, framesDir, packetSize,
-                vggInputSize, model, preprocess_input)
+    modelRunner(outputPath, foldersList, inceptionInputSize,
+                model, preprocess_input)

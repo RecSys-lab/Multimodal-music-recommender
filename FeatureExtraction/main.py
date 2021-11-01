@@ -42,6 +42,9 @@ def featureExtractor():
     elif userInput == 'Feature Extraction - ResNet101V2':
         ResNet101v2Launcher(framesFoldersList)
     elif userInput == 'Feature Aggregation':
+        # Create a folder for outputs if not existed
+        if not os.path.exists(aggFeaturesDir):
+            os.mkdir(aggFeaturesDir)
         # Fetcth the list of video folder(s) containing packets
         packetsFoldersList = SubdirectoryExtractor(featuresDir)
         # Aggregates all features for each video and produces a CSV file

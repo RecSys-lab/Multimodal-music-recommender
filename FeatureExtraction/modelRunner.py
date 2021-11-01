@@ -57,4 +57,4 @@ def modelRunner(outputPath: str, foldersList: list, inputSize: int, model, prepr
                     packetIndex += 1
             elapsedTime = '{:.2f}'.format(time.time() - startTime)
             logger(
-                f'Extracted {fearuesCounter}x{features.shape} features ({packetIndex} packets) from {videoId} in {elapsedTime} seconds!')
+                f'Extracted {fearuesCounter}x{features.shape} features ({packetIndex-1} packets) from {videoId} in {elapsedTime} seconds!')

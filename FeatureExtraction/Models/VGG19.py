@@ -14,7 +14,7 @@ vggInputSize = 224
 
 
 def VGG19Launcher(foldersList: list):
-    logger('Launching Inception-v3 network ...')
+    logger('Launching VGG-19 network ...')
     # Create a folder for outputs if not existed
     outputPath = f'{featuresDir}/Vgg19'
     if not os.path.exists(outputPath):

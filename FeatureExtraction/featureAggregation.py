@@ -40,14 +40,10 @@ def featureAggregation(featureFoldersList: list):
                     features = np.asarray(frameData['features'])
                     packetAggFeatures.append(features)
                 # Using the packet-level aggregated array for max/mean calculations
-                meanPacketAggFeatures = np.mean(
-                    packetAggFeatures, axis=0)
-                maxPacketAggFeatures = np.max(
-                    packetAggFeatures, axis=0)
-                meanPacketAggFeatures = np.round(
-                    meanPacketAggFeatures, 6)
-                maxPacketAggFeatures = np.round(
-                    maxPacketAggFeatures, 6)
+                meanPacketAggFeatures = np.mean(packetAggFeatures, axis=0)
+                maxPacketAggFeatures = np.max(packetAggFeatures, axis=0)
+                meanPacketAggFeatures = np.round(meanPacketAggFeatures, 6)
+                maxPacketAggFeatures = np.round(maxPacketAggFeatures, 6)
                 # Append them to video-level aggregation
                 maxAggFeatures.append(maxPacketAggFeatures)
                 meanAggFeatures.append(
@@ -55,14 +51,10 @@ def featureAggregation(featureFoldersList: list):
                 if (packetCounter % 25 == 0):
                     print(f'Packet #{packetCounter} has been processed!')
             # Using the video-level aggregated array for max/mean calculations
-            maxAggFeatures = np.mean(
-                maxAggFeatures, axis=0)
-            meanAggFeatures = np.max(
-                meanAggFeatures, axis=0)
-            maxAggFeatures = np.round(
-                maxAggFeatures, 6)
-            meanAggFeatures = np.round(
-                meanAggFeatures, 6)
+            maxAggFeatures = np.mean(maxAggFeatures, axis=0)
+            meanAggFeatures = np.max(meanAggFeatures, axis=0)
+            maxAggFeatures = np.round(maxAggFeatures, 6)
+            meanAggFeatures = np.round(meanAggFeatures, 6)
             # Save aggregated arrays in files
             dataFrame = pd.DataFrame(columns=['Max', 'Mean'])
             dataFrame = dataFrame.append(

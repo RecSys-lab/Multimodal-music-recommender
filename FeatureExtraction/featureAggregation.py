@@ -71,4 +71,4 @@ def featureAggregation(featureFoldersList: list):
                 f'{aggFeaturesDir}/{videoId}.json', orient="records")
             elapsedTime = int(time.time() - startTime)
             logger(
-                f'Aggregated {packetCounter-1} packets of {videoId} in {elapsedTime} seconds.')
+                f'Aggregated {packetCounter} packets of {videoId} in {elapsedTime} seconds.')

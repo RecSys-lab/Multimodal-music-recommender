@@ -15,8 +15,6 @@ In order to run the application, you will need to install the Python libraries l
 - Keras >= 2.6.0
 - CUDA >= 11.4
 - Pandas >= 1.3.4
-- Pillow >= 8.3
-- Cornac >= 1.14.1
 
 For a simple solution, you can simply run the below command in the root directory:
 

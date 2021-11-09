@@ -1,4 +1,5 @@
 import os
+from glob import glob
 from utils import logger
 from PyInquirer import prompt
 from config import framesDir, featuresDir, aggFeaturesDir
@@ -25,9 +26,12 @@ def getUserInput():
     userInput = prompt(questions)
     return userInput
 
-def selectFolder(packetsFoldersList):
-    choices = [folder.split('/')[-1] for folder in packetsFoldersList]
-    association = {folder.split('/')[-1]: folder for folder in packetsFoldersList}
+
+def selectFolder():
+    # Show only folders inside the featuresDir (e.g., VGG19, Incp3)
+    featuresFolders = glob(f'{featuresDir}/*/')
+    choices = [os.path.dirname(folder).split('\\')[-1]
+               for folder in featuresFolders]
     possibilities = [
         {
             'type': 'list',
@@ -36,9 +40,7 @@ def selectFolder(packetsFoldersList):
             'choices': choices
         },
     ]
-    userInput = prompt(possibilities)
-    userInput = {'Action': association[userInput['Action']]}
-    return userInput
+    return prompt(possibilities)
 
 
 def featureExtractor():
@@ -60,11 +62,14 @@ def featureExtractor():
         # Create a folder for outputs if not existed
         if not os.path.exists(aggFeaturesDir):
             os.mkdir(aggFeaturesDir)
-        # Fetch the list of models with video folder(s) containing packets
-        packetsFoldersList = SubdirectoryExtractor(featuresDir)
         # Prompt the user with folder associated with the models
-        packetsFoldersList = selectFolder(packetsFoldersList)
-        # Fetch the list of video folder(s) containing packets
-        packetsFoldersList = SubdirectoryExtractor(packetsFoldersList['Action'])
+        selectedFolder = selectFolder()['Action']
+        aggFolder = f'{aggFeaturesDir}/{selectedFolder}'
+        # Fetch the list of folder(s) containing packets
+        packetsFoldersList = SubdirectoryExtractor(
+            f'{featuresDir}/{selectedFolder}')
+        # Create a folder for outputs if not existed
+        if not os.path.exists(aggFolder):
+            os.mkdir(aggFolder)
         # Aggregates all features for each video and produces a CSV file
-        featureAggregation(packetsFoldersList)
+        featureAggregation(packetsFoldersList, aggFolder)

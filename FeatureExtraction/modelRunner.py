@@ -28,33 +28,41 @@ def modelRunner(outputPath: str, foldersList: list, inputSize: int, model, prepr
             packetIndex = 1  # Holds the name of the packet, e.g. Packet0001
             dataFrame = pd.DataFrame(columns=['frameId', 'features'])
             for imageFile in glob.glob(f'{imageFolder}/*.jpg'):
-                # Finding frameId by removing .jpg from the name
-                frameId = ('frame' + imageFile.rsplit('frame', 1)[1])[:-4]
-                # Load a frame and convert it into a numpy array
-                frame = load_img(imageFile, target_size=(
-                    inputSize, inputSize))
-                frameData = img_to_array(frame)
-                frameData = np.expand_dims(frameData, axis=0)
-                # Preprocessing
-                frameData = preprocess_input(frameData)
-                # Get extracted features
-                features = model.predict(frameData)
-                # Append rows to dataFrame
-                dataFrame = dataFrame.append(
-                    {'frameId': frameId, 'features': features[0]}, ignore_index=True)
-                packetCounter += 1
-                # Reset the counter only if packetCounter reaches the limit (packetSize) and there is no more frames for process
-                remainingNumberOfFrames -= 1
-                resetCounter = (packetCounter == packetSize) or (
-                    remainingNumberOfFrames == 0)
-                if (resetCounter):
-                    # Save dataFrame as packet in a file
-                    packetManager(packetIndex, dataFrame,
-                                  videoId, outputPath)
-                    # Clear dataFrame rows
-                    dataFrame.drop(dataFrame.index, inplace=True)
-                    packetCounter = 0
-                    packetIndex += 1
+                fileName = os.path.basename(imageFile)
+                parentDir = os.path.basename(os.path.dirname(imageFile))
+                try:
+                    # Finding frameId by removing .jpg from the name
+                    frameId = ('frame' + imageFile.rsplit('frame', 1)[1])[:-4]
+                    # Load a frame and convert it into a numpy array
+                    frame = load_img(imageFile, target_size=(
+                        inputSize, inputSize))
+                    frameData = img_to_array(frame)
+                    frameData = np.expand_dims(frameData, axis=0)
+                    # Preprocessing
+                    frameData = preprocess_input(frameData)
+                    # Get extracted features
+                    features = model.predict(frameData)
+                    # Append rows to dataFrame
+                    dataFrame = dataFrame.append(
+                        {'frameId': frameId, 'features': features[0]}, ignore_index=True)
+                    packetCounter += 1
+                    # Reset the counter only if packetCounter reaches the limit (packetSize) and there is no more frames for process
+                    remainingNumberOfFrames -= 1
+                    resetCounter = (packetCounter == packetSize) or (
+                        remainingNumberOfFrames == 0)
+                    if (resetCounter):
+                        # Save dataFrame as packet in a file
+                        packetManager(packetIndex, dataFrame,
+                                      videoId, outputPath)
+                        # Clear dataFrame rows
+                        dataFrame.drop(dataFrame.index, inplace=True)
+                        packetCounter = 0
+                        packetIndex += 1
+                except Exception as error:
+                    errorText = str(error)
+                    logger(
+                        f'Error while extracting features of {fileName} in {parentDir} ({errorText})', logLevel="error")
+                    continue
             elapsedTime = '{:.2f}'.format(time.time() - startTime)
             logger(
                 f'Extracted {fearuesCounter}x{features.shape} features ({packetIndex-1} packets) from {videoId} in {elapsedTime} seconds!')

@@ -25,6 +25,21 @@ def getUserInput():
     userInput = prompt(questions)
     return userInput
 
+def selectFolder(packetsFoldersList):
+    choices = [folder.split('/')[-1] for folder in packetsFoldersList]
+    association = {folder.split('/')[-1]: folder for folder in packetsFoldersList}
+    possibilities = [
+        {
+            'type': 'list',
+            'name': 'Action',
+            'message': 'Select from which model you want to take the extracted features:',
+            'choices': choices
+        },
+    ]
+    userInput = prompt(possibilities)
+    userInput = {'Action': association[userInput['Action']]}
+    return userInput
+
 
 def featureExtractor():
     logger('Features Extractor Started!')
@@ -45,7 +60,11 @@ def featureExtractor():
         # Create a folder for outputs if not existed
         if not os.path.exists(aggFeaturesDir):
             os.mkdir(aggFeaturesDir)
-        # Fetcth the list of video folder(s) containing packets
+        # Fetch the list of models with video folder(s) containing packets
         packetsFoldersList = SubdirectoryExtractor(featuresDir)
+        # Prompt the user with folder associated with the models
+        packetsFoldersList = selectFolder(packetsFoldersList)
+        # Fetch the list of video folder(s) containing packets
+        packetsFoldersList = SubdirectoryExtractor(packetsFoldersList['Action'])
         # Aggregates all features for each video and produces a CSV file
         featureAggregation(packetsFoldersList)

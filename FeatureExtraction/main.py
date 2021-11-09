@@ -26,15 +26,18 @@ def getUserInput():
     return userInput
 
 def selectFolder(packetsFoldersList):
+    choices = [folder.split('/')[-1] for folder in packetsFoldersList]
+    association = {folder.split('/')[-1]: folder for folder in packetsFoldersList}
     possibilities = [
         {
             'type': 'list',
             'name': 'Action',
-            'message': 'Select an action from the list below:',
-            'choices': packetsFoldersList
+            'message': 'Select from which model you want to take the extracted features:',
+            'choices': choices
         },
     ]
     userInput = prompt(possibilities)
+    userInput = {'Action': association[userInput['Action']]}
     return userInput
 
 
